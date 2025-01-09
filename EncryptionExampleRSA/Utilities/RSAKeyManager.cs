@@ -4,10 +4,10 @@ namespace EncryptionExampleRSA.Utilities
 {
     internal static class RSAKeyManager
     {
-        private static string publicKeyPath = "public_key.pem";
-        private static string privateKeyPath = "private_key.pem";
+        internal static string publicKeyPath = "public_key.pem";
+        internal static string privateKeyPath = "private_key.pem";
 
-        public static void GenerateAndStoreKeys()
+        internal static void GenerateAndStoreKeys()
         {
             using (RSA rsa = RSA.Create(2048))
             {

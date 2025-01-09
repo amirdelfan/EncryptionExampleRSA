@@ -4,15 +4,20 @@ using System.Security.Cryptography;
 
 byte[] encryptedDataBytes, encryptedKeyBytes, ivBytes;
 
+// Generate and store RSA keys
+RSAKeyManager.GenerateAndStoreKeys();
+
 // Load the public key for encryption
-string publicKeyPem = File.ReadAllText("public_key.pem");
+string publicKeyPem = File.ReadAllText(RSAKeyManager.publicKeyPath);
 using (RSA rsaEncrypt = RSA.Create())
 {
-
+    // Import the public key
     rsaEncrypt.ImportFromPem(publicKeyPem);
 
     string plainText = "This is the data to be encrypted.";
-    Console.WriteLine("Plain Text: " + plainText);  
+    Console.WriteLine("Plain Text: " + plainText);
+
+    // Encrypt data
     var (encryptedData, encryptedKey, iv) = HybridEncryptionUtility.EncryptData(plainText, rsaEncrypt);
 
     // Convert to base64 for storage/transfer
@@ -28,7 +33,7 @@ using (RSA rsaEncrypt = RSA.Create())
 }
 
 // Load the private key for decryption
-string privateKeyPem = File.ReadAllText("private_key.pem");
+string privateKeyPem = File.ReadAllText(RSAKeyManager.privateKeyPath);
 using (RSA rsaDecrypt = RSA.Create())
 {
     rsaDecrypt.ImportFromPem(privateKeyPem);
