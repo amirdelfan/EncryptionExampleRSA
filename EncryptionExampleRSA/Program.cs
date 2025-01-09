@@ -2,40 +2,38 @@
 using EncryptionExampleRSA.Utilities;
 using System.Security.Cryptography;
 
-
-// Ensure keys exist and regenerate private key
-RSAKeyManager.EnsureKeysExist();
-RSAKeyManager.RegeneratePrivateKey();
-
-// Original data
-string plainText = "This is the data to be encrypted.";
+byte[] encryptedDataBytes, encryptedKeyBytes, ivBytes;
 
 // Load the public key for encryption
 string publicKeyPem = File.ReadAllText("public_key.pem");
-RSA rsaEncrypt = RSA.Create();
-rsaEncrypt.ImportFromPem(publicKeyPem.ToCharArray());
+using (RSA rsaEncrypt = RSA.Create())
+{
 
-// Encrypt data
-var (encryptedData, encryptedKey, iv) = HybridEncryptionUtility.EncryptData(plainText, rsaEncrypt);
+    rsaEncrypt.ImportFromPem(publicKeyPem);
 
-// Convert to base64 for storage/transfer
-string encryptedDataBase64 = Convert.ToBase64String(encryptedData);
-string encryptedKeyBase64 = Convert.ToBase64String(encryptedKey);
-string ivBase64 = Convert.ToBase64String(iv);
+    string plainText = "This is the data to be encrypted.";
+    Console.WriteLine("Plain Text: " + plainText);  
+    var (encryptedData, encryptedKey, iv) = HybridEncryptionUtility.EncryptData(plainText, rsaEncrypt);
 
-// Print encrypted data (for demonstration purposes)
-Console.WriteLine("Encrypted Data (Base64): " + encryptedDataBase64);
+    // Convert to base64 for storage/transfer
+    var (encryptedDataBase64, encryptedKeyBase64, ivBase64) = HybridEncryptionUtility.ConvertToBase64(encryptedData, encryptedKey, iv);
 
-// Convert base64 back to byte arrays for decryption
-byte[] encryptedDataBytes = Convert.FromBase64String(encryptedDataBase64);
-byte[] encryptedKeyBytes = Convert.FromBase64String(encryptedKeyBase64);
-byte[] ivBytes = Convert.FromBase64String(ivBase64);
+    // Send the encrypted data to the receiving party
+    Console.WriteLine("Encrypted Data (Base64): " + encryptedDataBase64);
+    Console.WriteLine("Encrypted Key (Base64): " + encryptedKeyBase64);
+    Console.WriteLine("IV (Base64): " + ivBase64);
+
+    // Convert base64 back to byte arrays (received data)
+    (encryptedDataBytes, encryptedKeyBytes, ivBytes) = HybridEncryptionUtility.ConvertFromBase64(encryptedDataBase64, encryptedKeyBase64, ivBase64);
+}
 
 // Load the private key for decryption
 string privateKeyPem = File.ReadAllText("private_key.pem");
-RSA rsaDecrypt = RSA.Create();
-rsaDecrypt.ImportFromPem(privateKeyPem.ToCharArray());
+using (RSA rsaDecrypt = RSA.Create())
+{
+    rsaDecrypt.ImportFromPem(privateKeyPem);
 
-// Decrypt data
-string decryptedText = HybridEncryptionUtility.DecryptData(encryptedDataBytes, encryptedKeyBytes, ivBytes, rsaDecrypt);
-Console.WriteLine("Decrypted Text: " + decryptedText);
+    // Decrypt data
+    string decryptedText = HybridEncryptionUtility.DecryptData(encryptedDataBytes, encryptedKeyBytes, ivBytes, rsaDecrypt);
+    Console.WriteLine("Decrypted Text: " + decryptedText);
+}
