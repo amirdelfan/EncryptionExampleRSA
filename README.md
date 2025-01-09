@@ -56,3 +56,36 @@ Encrypted Data (Base64): The AES-encrypted data.
 Encrypted AES Key (Base64): The RSA-encrypted AES key.
 
 IV (Base64): The IV used for AES encryption.
+
+
+Encrypted AES Key
+Purpose: The AES key is needed to decrypt the actual data that was encrypted using the AES algorithm.
+
+Security: By encrypting the AES key with the receiver's public RSA key, you ensure that only the receiver, who possesses the corresponding private RSA key, can decrypt and obtain the AES key.
+
+Symmetric Encryption: The AES algorithm relies on this key for both encryption and decryption. Without the correct AES key, the receiver cannot decrypt the encrypted data.
+
+Initialization Vector (IV)
+Purpose: The IV ensures that identical plaintexts will encrypt to different ciphertexts, even when using the same AES key.
+
+Data Integrity: The IV is essential for the decryption process to correctly reverse the encryption.
+
+Uniqueness: It ensures that each encryption operation produces a unique ciphertext, even if the same plaintext is encrypted multiple times with the same key. This provides an additional layer of security.
+
+Summary
+In a hybrid encryption scheme:
+
+Encrypted AES Key: Allows secure transmission of the symmetric key, ensuring that only the intended recipient can decrypt the data.
+
+IV: Ensures data integrity and security by adding uniqueness to the encryption process.
+
+Both the AES key and the IV are integral to securely encrypting and decrypting the data. By sending them alongside the encrypted data, you provide the receiver with all the necessary components to decrypt the message securely.
+
+Example
+Here's a recap of what you send to the receiving party:
+
+Encrypted Data (Base64): The AES-encrypted data.
+
+Encrypted AES Key (Base64): The RSA-encrypted AES key.
+
+IV (Base64): The IV used for AES encryption.
