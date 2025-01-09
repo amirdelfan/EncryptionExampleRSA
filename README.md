@@ -38,3 +38,21 @@ In practice, many systems use a combination of both:
 Key Exchange: Asymmetric encryption (RSA) is used to securely exchange a symmetric key.
 
 Data Encryption: Symmetric encryption (AES) is used to encrypt the actual data using the exchanged symmetric key.
+
+
+! Here's a summary of the data you should send to the receiving party for them to decrypt the information:
+
+Encrypted Data: The actual data encrypted using AES.
+
+Encrypted AES Key: The AES symmetric key encrypted with the receiver's public RSA key.
+
+Initialization Vector (IV): The IV used during the AES encryption process.
+
+Example:
+When you're done encrypting the data, you'll have these three items, which you can convert to base64 for easy storage and transfer:
+
+Encrypted Data (Base64): The AES-encrypted data.
+
+Encrypted AES Key (Base64): The RSA-encrypted AES key.
+
+IV (Base64): The IV used for AES encryption.
