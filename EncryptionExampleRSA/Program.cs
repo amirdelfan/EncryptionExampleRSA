@@ -6,6 +6,8 @@ byte[] encryptedDataBytes, encryptedKeyBytes, ivBytes;
 
 // Generate and store RSA keys
 RSAKeyManager.GenerateAndStoreKeys();
+RSAKeyManager.CreateCertificates();
+RSAKeyManager.ImportCertificates();
 
 // Load the public key for encryption
 string publicKeyPem = File.ReadAllText(RSAKeyManager.publicKeyPath);
